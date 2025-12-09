@@ -8,28 +8,20 @@ $handle = fopen($fileName, "r");
 if ($handle) {
     while (($line = fgets($handle)) !== false) {
         $rotation = substr($line, 0, 1);
-        $line = ltrim($line, "RL");
+        $line = (int)ltrim($line, "RL");
         switch($rotation) {
             case 'R':
-                $dial += (int)$line;
-                if($dial >= 100) {
-                    $dial = $dial - 100;
-                }
-                if($dial = 0) {
-                    $password++;
-                }               
+                $dial += $line;
                 break;
             case 'L':
-                $dial -= (int)$line;
-                if($dial < 0) {
-                    $dial = 100 - $dial;
-                }
-                if($dial = 0) {
-                    $password++;
-                }               
+                $dial -= $line;
                 break;
         }
+        if($dial >= 100 || $dial < 0) {
+            $dial = $dial % 100;
+        }
+        if ($dial == 0) $password++;
     }
-    echo $password;
     fclose($handle);
 }
+echo "Password: " . $password;
